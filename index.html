@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Montserrat:wght@300;500;700&display=swap');
+
+    body {
+      background: #000;
+      color: #fff;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      font-family: 'Montserrat', sans-serif;
+    }
+    .main-content-wrapper {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 100%;
+      position: relative;
+    }
+    /* "01" as a background element, transparent with no border, no padding */
+    .vertical-number-bg {
+      position: absolute;
+      left: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 0;
+      width: 15rem;
+      height: 80vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+      /* No padding */
+    }
+    .vertical-number-bg span {
+      writing-mode: vertical-rl;
+      text-orientation: mixed;
+      font-size: 15rem;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      color: rgba(52,152,219,0.12); /* Very faint for background */
+      font-family: 'Montserrat', sans-serif;
+      text-shadow: none;
+      display: inline-block;
+      transform: rotate(180deg);
+      margin: 0;
+      background: transparent;
+      /* border removed */
+      border-radius: 16px;
+      box-sizing: border-box;
+      /* No padding */
+      width: auto;
+      height: auto;
+      /* Make sure the border is visible but the inside is transparent */
+    }
+    .rectangle-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin: 0 auto;
+      width: fit-content;
+      height: 80vh;
+      position: relative;
+      z-index: 1;
+    }
+    .vertical-rectangle {
+      width: 80px;
+      height: 170px;
+      background: #111;
+      transition:
+        width 0.3s ease-out,
+        height 0.3s ease-out,
+        box-shadow 0.3s ease-out,
+        z-index 0.18s,
+        transform 0.3s ease-out,
+        left 0.3s ease-out,
+        margin 0.3s ease-out,
+        opacity 0.3s ease-out,
+        filter 0.3s ease-out,
+        background 0.3s ease-out;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+      position: relative;
+      overflow: hidden;
+      border-radius: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 1;
+      will-change: width, height, box-shadow, transform, margin, opacity, filter, background;
+      filter: grayscale(1);
+    }
+    .vertical-rectangle .rectangle-label {
+      display: none;
+    }
+    .vertical-rectangle .rectangle-content {
+      display: none;
+    }
+    .vertical-rectangle img {
+      filter: grayscale(1);
+      transition: filter 0.3s ease-out;
+    }
+    /* Highlighted (hovered/focused) rectangle: show color */
+    .vertical-rectangle.bigger {
+      width: 160px;
+      height: 230px;
+      z-index: 4;
+      box-shadow: 0 16px 48px 0 rgba(0,0,0,0.40);
+      transform: scale(1.18);
+      border-radius: 0;
+      background: linear-gradient(135deg, #3498db, #2980b9);
+      filter: none;
+      transition:
+        width 0.3s ease-out,
+        height 0.3s ease-out,
+        box-shadow 0.3s ease-out,
+        z-index 0.18s,
+        transform 0.3s ease-out,
+        margin 0.3s ease-out,
+        opacity 0.3s ease-out,
+        filter 0.3s ease-out,
+        background 0.3s ease-out;
+    }
+    .vertical-rectangle.bigger img {
+      filter: none;
+    }
+    .vertical-rectangle.bigger.long-hover {
+      width: 450px !important;
+      height: 260px !important;
+      transition: width 0.3s ease-out, height 0.3s ease-out;
+    }
+    /* Sides get color, but less intense, and spread smoothly */
+    .vertical-rectangle.side {
+      width: 60px;
+      height: 180px;
+      z-index: 3;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.22);
+      opacity: 0.97;
+      border-radius: 0;
+      /* Use a lighter version of the color, and partial grayscale */
+      background: linear-gradient(135deg, #3498db, #2980b9);
+      filter: grayscale(0.5);
+      transition:
+        width 0.3s ease-out,
+        height 0.3s ease-out,
+        box-shadow 0.3s ease-out,
+        z-index 0.18s,
+        transform 0.3s ease-out,
+        margin 0.3s ease-out,
+        opacity 0.3s ease-out,
+        filter 0.3s ease-out,
+        background 0.3s ease-out;
+    }
+    .vertical-rectangle.side img {
+      filter: grayscale(0.5);
+    }
+    .vertical-rectangle.side2 {
+      width: 70px;
+      height: 150px;
+      z-index: 2;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.18);
+      opacity: 0.88;
+      border-radius: 0;
+      /* Even more faded color */
+      background: linear-gradient(135deg, #3498db, #2980b9);
+      filter: grayscale(0.8);
+      transition:
+        width 0.3s ease-out,
+        height 0.3s ease-out,
+        box-shadow 0.3s ease-out,
+        z-index 0.18s,
+        transform 0.3s ease-out,
+        margin 0.3s ease-out,
+        opacity 0.3s ease-out,
+        filter 0.3s ease-out,
+        background 0.3s ease-out;
+    }
+    .vertical-rectangle.side2 img {
+      filter: grayscale(0.8);
+    }
+    .vertical-rectangle.far {
+      opacity: 0.65;
+      filter: blur(1px) grayscale(1);
+      z-index: 1;
+      transform: scale(0.98);
+      width: 50px;
+      height: 130px;
+      border-radius: 0;
+      background: #111;
+      transition:
+        width 0.3s ease-out,
+        height 0.3s ease-out,
+        box-shadow 0.3s ease-out,
+        z-index 0.18s,
+        transform 0.3s ease-out,
+        margin 0.3s ease-out,
+        opacity 0.3s ease-out,
+        filter 0.3s ease-out,
+        background 0.3s ease-out;
+    }
+    .vertical-rectangle.far img {
+      filter: grayscale(1) blur(1px);
+    }
+    .hover-info {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      text-align: center;
+      color: #fff;
+      font-family: 'Montserrat', sans-serif;
+      width: 80%; /* Make the hover-info wider */
+      transition: opacity 0.9s ease-out, transform 0.9s ease-out;
+      opacity: 0;
+    }
+    .hover-info.visible {
+      opacity: 1;
+      transform: translateX(-50%) translateY(-10px);
+    }
+    .hover-info .title {
+      position: absolute;
+      bottom: -250px; /* 0px from bottom */
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 10px; /* Added space between title and description */
+      width: 100%; /* Make title take full width */
+      text-align: center; /* Center the title */
+    }
+    .hover-info .description {
+      position: absolute;
+      bottom: -300px; /* 50px from bottom */
+      font-size: 1.5rem;
+      font-weight: 400;
+      margin-top: 0; /* Ensure description does not affect title position */
+      width: 100%; /* Make description take full width */
+      text-align: center; /* Center the description */
+    }
+    .project-title {
+      font-size: 3rem;
+      font-weight: bold;
+      text-align: center;
+      margin-bottom: -120px; /* Adjusted to move the project title a little above */
+    }
+  </style>
+</head>
+<body>
+<div class="project-title">Project</div>
+<div class="main-content-wrapper">
+  <div class="vertical-number-bg"><span>01</span></div>
+  <div class="rectangle-container" id="rect-container">
+    <div class="vertical-rectangle" tabindex="0" data-title="Section 1" data-description="Content for Section 1."></div>
+    <div class="vertical-rectangle" tabindex="0" data-title="Section 2" data-description="Content for Section 2."></div>
+    <div class="vertical-rectangle" tabindex="0" data-title="Section 3" data-description="Content for Section 3."></div>
+    <div class="vertical-rectangle" tabindex="0" data-title="Section 4" data-description="Content for Section 4."></div>
+    <div class="vertical-rectangle" tabindex="0" data-title="Section 5" data-description="Content for Section 5."></div>
+    <div class="vertical-rectangle" tabindex="0" data-title="Section 6" data-description="Content for Section 6."></div>
+    <div class="vertical-rectangle" tabindex="0" data-title="Section 7" data-description="Content for Section 7."></div>
+    <div class="vertical-rectangle" tabindex="0" data-title="Section 8" data-description="Content for Section 8."></div>
+    <div class="vertical-rectangle" tabindex="0" data-title="Section 9" data-description="Content for Section 9."></div>
+    <div class="vertical-rectangle" tabindex="0" data-title="Section 10" data-description="Content for Section 10."></div>
+  </div>
+</div>
+
+<div class="hover-info" id="hover-info">
+  <div class="title" id="hover-title"></div>
+  <div class="description" id="hover-description"></div>
+</div>
+
+<script>
+  // Helper to log errors
+  function logError(context, error) {
+    if (window && window.console && typeof window.console.error === 'function') {
+      console.error(`[Rectangle Error][${context}]`, error);
+    }
+  }
+
+  // Helper to remove all highlight classes and reset transforms
+  function clearHighlights() {
+    try {
+      const rects = document.querySelectorAll('.vertical-rectangle');
+      if (!rects || typeof rects.forEach !== 'function') throw new Error('No rectangles found');
+      rects.forEach(function(rect) {
+        if (!rect) return;
+        rect.classList.remove('bigger', 'side', 'side2', 'far', 'long-hover');
+        rect.style.transform = '';
+        rect.style.zIndex = '';
+        rect.style.marginLeft = '';
+        rect.style.marginRight = '';
+        rect.style.transitionDelay = '';
+        rect.style.background = '';
+        rect.style.filter = '';
+        // Remove color from images
+        var imgs = rect.querySelectorAll('img');
+        imgs.forEach(function(img) {
+          img.style.filter = '';
+        });
+      });
+    } catch (e) {
+      logError('clearHighlights', e);
+    }
+  }
+
+  // Sequentially highlight rectangles from current to target
+  function sequentialHighlight(target) {
+    try {
+      const rects = Array.from(document.querySelectorAll('.vertical-rectangle'));
+      const idx = rects.indexOf(target);
+      if (idx === -1) throw new Error('Target rectangle not found in list');
+
+      let currentIdx = rects.findIndex(rect => rect.classList.contains('bigger'));
+      if (currentIdx === -1) currentIdx = idx; // Start from the current target if none highlighted
+
+      const step = currentIdx < idx ? 1 : -1;
+      let i = currentIdx;
+
+      function stepHighlight() {
+        if (i !== idx) {
+          highlightWithSides(rects[i]);
+          i += step;
+          setTimeout(stepHighlight, 50); // Adjust delay for faster transition
+        } else {
+          highlightWithSides(rects[i]);
+        }
+      }
+
+      stepHighlight();
+    } catch (e) {
+      logError('sequentialHighlight', e);
+    }
+  }
+
+  // Find index of hovered/focused rectangle and apply classes to neighbors
+  function highlightWithSides(target) {
+    try {
+      if (!target) throw new Error('Target rectangle is null or undefined');
+      clearHighlights();
+      const rects = Array.from(document.querySelectorAll('.vertical-rectangle'));
+      if (!rects.length) throw new Error('No rectangles found');
+      const idx = rects.indexOf(target);
+      if (idx === -1) throw new Error('Target rectangle not found in list');
+
+      // Overlap/gap settings
+      const expandedGap = 24; // px, gap when expanded
+
+      // For staggered animation, set transition delays
+      rects.forEach((rect, i) => {
+        if (!rect) return;
+        rect.style.zIndex = 1;
+        rect.style.marginLeft = '';
+        rect.style.marginRight = '';
+        rect.classList.remove('bigger', 'side', 'side2', 'far', 'long-hover');
+        rect.style.transitionDelay = (Math.abs(i - idx) * 0.02) + 's';
+        rect.style.background = '';
+        rect.style.filter = '';
+        // Reset images
+        var imgs = rect.querySelectorAll('img');
+        imgs.forEach(function(img) {
+          img.style.filter = '';
+        });
+      });
+
+      // Spread color smoothly to sides
+      rects.forEach((rect, i) => {
+        if (!rect) return;
+        try {
+          if (i === idx) {
+            rect.classList.add('bigger');
+            rect.style.zIndex = 4;
+            rect.style.transform = 'scale(1.18)';
+            rect.style.background = 'linear-gradient(135deg, #3498db, #2980b9)';
+            rect.style.filter = 'none';
+            var imgs = rect.querySelectorAll('img');
+            imgs.forEach(function(img) {
+              img.style.filter = 'none';
+            });
+            if (rects[i - 1]) {
+              rects[i - 1].style.marginRight = expandedGap + 'px';
+            }
+            if (rects[i + 1]) {
+              rects[i + 1].style.marginLeft = expandedGap + 'px';
+            }
+          } else if (i === idx - 1 || i === idx + 1) {
+            rect.classList.add('side');
+            rect.style.zIndex = 3;
+            rect.style.transform = 'scale(1.07)';
+            rect.style.background = 'linear-gradient(135deg, #3498db, #2980b9)';
+            rect.style.filter = 'grayscale(0.5)';
+            var imgs = rect.querySelectorAll('img');
+            imgs.forEach(function(img) {
+              img.style.filter = 'grayscale(0.5)';
+            });
+          } else if (i === idx - 2 || i === idx + 2) {
+            rect.classList.add('side2');
+            rect.style.zIndex = 2;
+            rect.style.transform = 'scale(1.03)';
+            rect.style.background = 'linear-gradient(135deg, #3498db, #2980b9)';
+            rect.style.filter = 'grayscale(0.8)';
+            var imgs = rect.querySelectorAll('img');
+            imgs.forEach(function(img) {
+              img.style.filter = 'grayscale(0.8)';
+            });
+          } else {
+            rect.classList.add('far');
+            rect.style.transform = 'scale(0.98)';
+            rect.style.zIndex = 1;
+            rect.style.background = '#111';
+            rect.style.filter = 'blur(1px) grayscale(1)';
+            var imgs = rect.querySelectorAll('img');
+            imgs.forEach(function(img) {
+              img.style.filter = 'grayscale(1) blur(1px)';
+            });
+          }
+        } catch (e) {
+          logError('highlightWithSides-inner', e);
+        }
+      });
+    } catch (e) {
+      logError('highlightWithSides', e);
+    }
+  }
+
+  // Reset all transforms and classes
+  function resetAll() {
+    try {
+      const rects = document.querySelectorAll('.vertical-rectangle');
+      if (!rects || typeof rects.forEach !== 'function') throw new Error('No rectangles found');
+      rects.forEach(function(rect) {
+        if (!rect) return;
+        rect.classList.remove('bigger', 'side', 'side2', 'far', 'long-hover');
+        rect.style.transform = '';
+        rect.style.zIndex = '';
+        rect.style.marginLeft = '';
+        rect.style.marginRight = '';
+        rect.style.transitionDelay = '';
+        rect.style.background = '';
+        rect.style.filter = '';
+        // Reset images
+        var imgs = rect.querySelectorAll('img');
+        imgs.forEach(function(img) {
+          img.style.filter = '';
+        });
+      });
+    } catch (e) {
+      logError('resetAll', e);
+    }
+  }
+
+  // Update event listeners to use sequentialHighlight
+  (function updateListeners() {
+    try {
+      const rects = document.querySelectorAll('.vertical-rectangle');
+      if (!rects || typeof rects.forEach !== 'function') throw new Error('No rectangles found');
+      rects.forEach(function(rect) {
+        if (!rect) return;
+        let longHoverTimeout = null;
+
+        rect.addEventListener('mouseenter', function() {
+          try {
+            sequentialHighlight(rect);
+            const hoverInfo = document.getElementById('hover-info');
+            const hoverTitle = document.getElementById('hover-title');
+            const hoverDescription = document.getElementById('hover-description');
+            hoverTitle.textContent = rect.getAttribute('data-title');
+            hoverDescription.textContent = '';
+            hoverInfo.classList.add('visible');
+            // Start long hover timer
+            longHoverTimeout = setTimeout(function() {
+              try {
+                if (rect.classList.contains('bigger')) {
+                  rect.classList.add('long-hover');
+                  hoverDescription.textContent = rect.getAttribute('data-description');
+                }
+              } catch (e) {
+                logError('mouseenter-longHoverTimeout', e);
+              }
+            }, 700);
+          } catch (e) {
+            logError('mouseenter', e);
+          }
+        });
+
+        rect.addEventListener('mouseleave', function() {
+          try {
+            resetAll();
+            const hoverInfo = document.getElementById('hover-info');
+            const hoverTitle = document.getElementById('hover-title');
+            const hoverDescription = document.getElementById('hover-description');
+            hoverTitle.textContent = '';
+            hoverDescription.textContent = '';
+            hoverInfo.classList.remove('visible');
+            if (longHoverTimeout) {
+              clearTimeout(longHoverTimeout);
+              longHoverTimeout = null;
+            }
+          } catch (e) {
+            logError('mouseleave', e);
+          }
+        });
+
+        // Keyboard accessibility
+        rect.addEventListener('focus', function() {
+          try {
+            sequentialHighlight(rect);
+            const hoverInfo = document.getElementById('hover-info');
+            const hoverTitle = document.getElementById('hover-title');
+            const hoverDescription = document.getElementById('hover-description');
+            hoverTitle.textContent = rect.getAttribute('data-title');
+            hoverDescription.textContent = '';
+            hoverInfo.classList.add('visible');
+            longHoverTimeout = setTimeout(function() {
+              try {
+                if (rect.classList.contains('bigger')) {
+                  rect.classList.add('long-hover');
+                  hoverDescription.textContent = rect.getAttribute('data-description');
+                }
+              } catch (e) {
+                logError('focus-longHoverTimeout', e);
+              }
+            }, 700);
+          } catch (e) {
+            logError('focus', e);
+          }
+        });
+
+        rect.addEventListener('blur', function() {
+          try {
+            resetAll();
+            const hoverInfo = document.getElementById('hover-info');
+            const hoverTitle = document.getElementById('hover-title');
+            const hoverDescription = document.getElementById('hover-description');
+            hoverTitle.textContent = '';
+            hoverDescription.textContent = '';
+            hoverInfo.classList.remove('visible');
+            if (longHoverTimeout) {
+              clearTimeout(longHoverTimeout);
+              longHoverTimeout = null;
+            }
+          } catch (e) {
+            logError('blur', e);
+          }
+        });
+      });
+    } catch (e) {
+      logError('updateListeners', e);
+    }
+  })();
+
+  // Optional: Auto-bigger the first rectangle on page load
+  window.addEventListener('DOMContentLoaded', function() {
+    try {
+      var first = document.querySelector('.vertical-rectangle');
+      if (first) {
+        highlightWithSides(first);
+        setTimeout(function() {
+          try {
+            resetAll();
+          } catch (e) {
+            logError('DOMContentLoaded-resetAll', e);
+          }
+        }, 700);
+      }
+    } catch (e) {
+      logError('DOMContentLoaded', e);
+    }
+  });
+</script>
+</body>
+</html>
